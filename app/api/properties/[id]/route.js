@@ -3,7 +3,6 @@ import Property from "@/models/Property";
 
 export const GET = async (request, { params }) => {
   try {
-    console.log(params.id);
     await connectDb();
 
     const property = await Property.findById(params.id);
