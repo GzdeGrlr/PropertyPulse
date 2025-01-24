@@ -5,10 +5,23 @@ import { FaArrowLeft } from "react-icons/fa";
 import Link from "next/link";
 import PropertyDetails from "@/components/PropertyDetails";
 import PropertyImages from "@/components/PropertyImages";
+import { convertToSerializableObject } from "@/utils/convertToObject";
+import BookmarkButton from "@/components/BookmarkButton";
+import ShareButtons from "@/components/ShareButtons";
+import PropertyContactForm from "@/components/PropertyContactForm";
 
 const PropertyPage = async ({ params }) => {
   await connectDb();
-  const property = await Property.findById(params.id).lean();
+  const propertyDocs = await Property.findById(params.id).lean();
+  const property = convertToSerializableObject(propertyDocs);
+
+  if (!property) {
+    return (
+      <h1 className="text-center text-2xl font-bold mt-10">
+        Property Not Found
+      </h1>
+    );
+  }
 
   return (
     <>
@@ -27,6 +40,13 @@ const PropertyPage = async ({ params }) => {
         <div className="container m-auto py-10 px-6">
           <div className="grid grid-cols-1 md:grid-cols-70/30 w-full gap-6">
             <PropertyDetails property={property} />
+
+            {/* <!-- Sidebar --> */}
+            <aside className="space-y-4">
+              <BookmarkButton property={property} />
+              <ShareButtons property={property} />
+              <PropertyContactForm property={property} />
+            </aside>
           </div>
         </div>
       </section>
